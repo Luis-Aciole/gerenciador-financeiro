@@ -4,27 +4,27 @@ import plotly.express as px
 import time
 import xlsxwriter
 
-# Configuração inicial do app deve ser o PRIMEIRO comando após os imports
+
 st.set_page_config(page_title="Gerenciador Financeiro", layout="wide")
 
-# Inicializando listas para receitas e despesas
+
 if "receitas" not in st.session_state:
     st.session_state.receitas = []
 if "despesas" not in st.session_state:
     st.session_state.despesas = []
 
-# Função para calcular totais
+
 def calcular_totais():
     total_receitas = sum([item['valor'] for item in st.session_state.receitas])
     total_despesas = sum([item['valor'] for item in st.session_state.despesas])
     saldo = total_receitas - total_despesas
     return total_receitas, total_despesas, saldo
 
-# Função para exibir gráficos no Resumo
+
 def exibir_graficos_resumo():
     total_receitas, total_despesas, saldo = calcular_totais()
 
-    # Gráfico de barras para despesas
+    
     if st.session_state.despesas:
         df_despesas = pd.DataFrame(st.session_state.despesas)
         categorias = df_despesas.groupby("categoria")["valor"].sum().reset_index()
@@ -40,7 +40,7 @@ def exibir_graficos_resumo():
         fig_bar.update_traces(texttemplate='R$ %{text:.2f}', textposition='outside')
         st.plotly_chart(fig_bar)
 
-        # Gráfico Treemap
+        
         categorias_treemap = categorias.copy()
         categorias_treemap["Tipo"] = "Despesas"
         receitas_df = pd.DataFrame([{"categoria": "Receitas Totais", "valor": total_receitas, "Tipo": "Receitas"}])
@@ -56,21 +56,21 @@ def exibir_graficos_resumo():
         )
         st.plotly_chart(fig_treemap)
 
-# Função para exportar relatório detalhado para Excel
+
 def exportar_excel_detalhado():
     df_receitas = pd.DataFrame(st.session_state.receitas)
     df_despesas = pd.DataFrame(st.session_state.despesas)
     total_receitas, total_despesas, saldo = calcular_totais()
 
     with pd.ExcelWriter("relatorio_financeiro_detalhado.xlsx", engine="xlsxwriter") as writer:
-        # Aba de Resumo
+        
         resumo = pd.DataFrame({
             "Descrição": ["Total de Receitas", "Total de Despesas", "Saldo Final"],
             "Valor (R$)": [total_receitas, total_despesas, saldo]
         })
         resumo.to_excel(writer, sheet_name="Resumo", index=False)
 
-        # Formatação e gráficos no Excel
+        
         workbook = writer.book
         worksheet_resumo = writer.sheets["Resumo"]
         currency_format = workbook.add_format({"num_format": "R$ #,##0.00", "bold": True, "align": "center"})
@@ -88,7 +88,7 @@ def exportar_excel_detalhado():
         chart.set_title({"name": "Resumo Financeiro"})
         worksheet_resumo.insert_chart("D2", chart)
 
-        # Receitas e Despesas
+        
         if not df_receitas.empty:
             df_receitas.to_excel(writer, sheet_name="Receitas", index=False)
             worksheet_receitas = writer.sheets["Receitas"]
@@ -112,11 +112,11 @@ def exportar_excel_detalhado():
             mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
 
-# Menu lateral
+
 menu = ["🏠 Início", "➕ Adicionar Receita", "➖ Adicionar Despesa", "📊 Resumo", "📁 Exportar Relatório"]
 escolha = st.sidebar.radio("Menu", menu)
 
-# Menu de navegação
+
 if escolha == "🏠 Início":
     st.markdown('<h1 class="big-font centered"> Gerenciador Financeiro Empresarial </h1>', unsafe_allow_html=True)
     st.write(
