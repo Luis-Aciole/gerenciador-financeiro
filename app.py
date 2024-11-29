@@ -1,14 +1,12 @@
-# Importando bibliotecas necessárias
-import streamlit as st
+import streamlit as st  # Primeiro importe as dependências
+
+st.set_page_config(page_title="Gerenciador Financeiro", layout="wide")  # Configuração vem aqui!
+
+# Outros imports que não dependem diretamente do Streamlit
 import pandas as pd
-import plotly.express as px
-import time
 import xlsxwriter
+import plotly.express as px
 
-# Configuração inicial do app - Deve ser a primeira execução após os imports
-st.set_page_config(page_title="Gerenciador Financeiro", layout="wide")
-
-# Inicializando listas para receitas e despesas no estado da sessão
 if "receitas" not in st.session_state:
     st.session_state.receitas = []
 if "despesas" not in st.session_state:
