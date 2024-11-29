@@ -8,7 +8,7 @@ import xlsxwriter
 # Configuração inicial do app - Deve ser a primeira execução após os imports
 st.set_page_config(page_title="Gerenciador Financeiro", layout="wide")
 
-# Inicializando listas para receitas e despesas
+# Inicializando listas para receitas e despesas no estado da sessão
 if "receitas" not in st.session_state:
     st.session_state.receitas = []
 if "despesas" not in st.session_state:
@@ -20,6 +20,9 @@ def calcular_totais():
     total_despesas = sum([item['valor'] for item in st.session_state.despesas])
     saldo = total_receitas - total_despesas
     return total_receitas, total_despesas, saldo
+
+# Corpo do aplicativo Streamlit
+st.title("Gerenciador Financeiro")
 
 # Função para exibir gráficos no Resumo
 def exibir_graficos_resumo():
